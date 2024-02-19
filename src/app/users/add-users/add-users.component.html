@@ -1,0 +1,224 @@
+<div  >
+    <div class="grid grid-cols-1 ">
+        <!-- Basic -->
+        <div class="panel align-items-center">
+            <div class="mb-5 flex items-center justify-between">
+                <h5 class="text-lg font-semibold dark:text-white-light"><button (click)="OnGetAllUsers()"> All Users</button></h5>
+                    <span class="flex items-center">
+                       <button (click)="onNewUser()" type="button" class="btn btn-primary rounded-full">Add User</button>
+                    </span>
+
+            </div>
+            <nav class="navbar navbar-expand-sm bg-light navbar-light">
+                <ul class="navbar navbar-nav m-auto">
+                    <li>
+                        <form #f="ngForm" class="mx-auto mb-5 w-full sm:w-1/2" (ngSubmit)="onSearch(f.value)">
+                            <div class="relative">
+                                <input ngModel name="keyword" [(ngModel)]="inputValue"
+                                       type="text"
+                                    placeholder="Search Attendees..."
+                                    class="form-input h-11 rounded-full bg-white shadow-[0_0_4px_2px_rgb(31_45_61_/_10%)] placeholder:tracking-wider ltr:pr-11 rtl:pl-11"
+
+                                />
+                                <button
+                                    class="btn btn-primary absolute inset-y-0 m-auto flex h-9 w-9 items-center justify-center rounded-full p-0 ltr:right-1 rtl:left-1">
+                                    <svg class="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5" />
+                                        <path d="M18.5 18.5L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+            <ng-container *ngIf="users$ | async as result" [ngSwitch]="result.dataState">
+
+                <ng-container *ngSwitchCase="DataStateEnum.LOADING">
+                    LOADING...
+                </ng-container>
+                <ng-container *ngSwitchCase="DataStateEnum.ERROR">
+                    <div class="text-red-500 font-bold">
+                        {{result.errorMessage}}
+                    </div>
+                </ng-container>
+                <ng-container *ngSwitchCase="DataStateEnum.LOADED">
+                    <div class="mb-5" >
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>DisplayName</th>
+                                    <th class="text-center">Id</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let data of result.data?.data ;">
+                                    <td class="whitespace-nowrap">{{ data.username }}</td>
+                                    <td>{{ data.role }}</td>
+                                    <td>{{ data.displayName }}</td>
+                                    <td
+                                        class="whitespace-nowrap text-center"
+                                        [ngClass]="{
+                                                    'text-success': data._id === '65ca8b73f2536a50d4d94fd4',
+                                                    'text-secondary': data._id === '65ca83b5fe8facb07d0ff66a',
+                                                    'text-info': data._id != '65ca8b73f2536a50d4d94fd4' && '65ca83b5fe8facb07d0ff66a',
+
+                                                }"
+                                    >
+                                        {{ data._id }}
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" ngxTippy data-tippy-content="Delete" (click)="onDelete(data)">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="m-auto h-5 w-5">
+                                                <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                                <path
+                                                    d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                    stroke-linecap="round"
+                                                />
+                                                <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                                <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                                <path
+                                                    opacity="0.5"
+                                                    d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <!--                            -->
+<!--                        <ul class="inline-flex items-center m-auto">-->
+<!--                            <li *ngFor="let user of [].constructor(result.data?.total); let page=index">-->
+<!--                                <button (click)="GoToPage( {inputValue},page)"-->
+<!--                                    type="button" class="flex justify-center font-semibold  px-3.5 py-2  transition  bg-white-light  text-dark hover:text-white hover:bg-primary  dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary">-->
+<!--                                    {{page}}-->
+<!--                                </button>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+                        <!---->
+                        <div class="mb-5">
+                            <div class="flex w-full flex-col justify-center">
+                                <ul class="m-auto inline-flex items-center">
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="flex justify-center bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white ltr:rounded-l-full rtl:rounded-r-full dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        >
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rtl:rotate-180">
+                                                <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                    </li>
+                                    <li *ngFor="let user of [].constructor(result.data?.total); let page=index">
+                                        <button (click)="GoToPage( {inputValue},page)"
+                                            type="button"
+                                            class="flex justify-center bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        >
+                                            {{page}}
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="flex justify-center bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white ltr:rounded-r-full rtl:rounded-l-full dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        >
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rtl:rotate-180">
+                                                <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+<!--                        -->
+                    </div>
+               </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="codeArr.includes('code1')">
+                <pre> <code highlight="&lt;div class=&quot;table-responsive&quot;&gt;
+    &lt;table&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;Name&lt;/th&gt;
+                &lt;th&gt;Date&lt;/th&gt;
+                &lt;th&gt;Sale&lt;/th&gt;
+                &lt;th class=&quot;text-center&quot;&gt;Status&lt;/th&gt;
+                &lt;th class=&quot;text-center&quot;&gt;Action&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            &lt;tr *ngFor=&quot;let data of tableData;&quot;&gt;
+                &lt;td class=&quot;whitespace-nowrap&quot;&gt; data.name &lt;/td&gt;
+                &lt;td&gt; data.date &lt;/td&gt;
+                &lt;td&gt; data.sale &lt;/td&gt;
+                &lt;td
+                    class=&quot;whitespace-nowrap text-center&quot;
+                    [ngClass]=&quot;{
+                            'text-success': data.status === 'Complete',
+                            'text-secondary': data.status === 'Pending',
+                            'text-info': data.status === 'In Progress',
+                            'text-danger': data.status === 'Canceled'
+                        }&quot;
+                &gt;
+                    data.status
+                &lt;/td&gt;
+                &lt;td class=&quot;text-center&quot;&gt;
+                    &lt;button type=&quot;button&quot; ngxTippy data-tippy-content=&quot;Delete&quot;&gt;
+                        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; class=&quot;m-auto h-5 w-5&quot;&gt;
+                            &lt;path d=&quot;M20.5001 6H3.5&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; /&gt;
+                            &lt;path
+                                d=&quot;M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5&quot;
+                                stroke=&quot;currentColor&quot;
+                                stroke-width=&quot;1.5&quot;
+                                stroke-linecap=&quot;round&quot;
+                            /&gt;
+                            &lt;path opacity=&quot;0.5&quot; d=&quot;M9.5 11L10 16&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; /&gt;
+                            &lt;path opacity=&quot;0.5&quot; d=&quot;M14.5 11L14 16&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; /&gt;
+                            &lt;path
+                                opacity=&quot;0.5&quot;
+                                d=&quot;M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6&quot;
+                                stroke=&quot;currentColor&quot;
+                                stroke-width=&quot;1.5&quot;
+                            /&gt;
+                        &lt;/svg&gt;
+                    &lt;/button&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/div&gt;
+
+&lt;!-- script --&gt;
+tableData = [
+        {
+            id: 1,
+            name: 'John Doe',
+            email: 'johndoe@yahoo.com',
+            date: '10/08/2020',
+            sale: 120,
+            status: 'Complete',
+            register: '5 min ago',
+            progress: '40%',
+            position: 'Developer',
+            office: 'London',
+        },
+        ....
+]"></code> </pre>
+            </ng-container>
+        </div>
+
+
+    </div>
+</div>
